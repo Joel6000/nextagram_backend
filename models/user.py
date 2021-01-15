@@ -2,11 +2,12 @@ from models.base_model import BaseModel
 import peewee as pw
 import re
 from werkzeug.security import generate_password_hash
+from flask_login import UserMixin
 
-class User(BaseModel):
+class User(UserMixin,BaseModel):
     name = pw.CharField(unique=True, null=False)
     email = pw.CharField(unique=False, null=False)
-    password_hash = pw.CharField(null=False)
+    password_hash = pw.TextField(null=False)
     password = None
     
     def validate(self):

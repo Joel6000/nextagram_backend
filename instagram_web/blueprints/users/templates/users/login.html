@@ -1,6 +1,16 @@
 {% extends "_layout.html" %}
 {% block content %}
-<form action="{{ url_for('') }}" method="POST">
+<h1>Login Page</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <ul class=flashes>
+  {% for message in messages %}
+    <li>{{ message }}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+{% endwith %}
+<form action="{{ url_for('users.login') }}" method="POST">
     <div class="form-group">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div>
