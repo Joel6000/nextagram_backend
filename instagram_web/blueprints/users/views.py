@@ -118,6 +118,7 @@ def edit(id):
 def update(id):
     pass
 
+#Upload func
 @users_blueprint.route('/<id>/upload', methods=['POST'])
 @login_required
 def upload(id):
@@ -136,7 +137,7 @@ def upload(id):
             image_path = upload_file_to_s3(file, user.name)
             
             user.image_path= image_path
-            
+
             if user.save():
                 flash("Upload sucess!")
                 return redirect(url_for('users.show', username=user.name))
