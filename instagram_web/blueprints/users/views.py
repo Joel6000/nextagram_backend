@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.user import User
 from werkzeug.security import check_password_hash
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -16,6 +16,7 @@ def new():
 def loginpage():
     return render_template('users/login.html')
 
+#Sign up func
 @users_blueprint.route('/', methods=['POST'])
 def create():
     new_user = User ( 
@@ -31,6 +32,7 @@ def create():
             flash(error)
     return redirect(url_for('users.new'))
 
+#Login func
 @users_blueprint.route('/login', methods=['POST'])
 def login():
     name= request.form.get('username')
@@ -47,6 +49,7 @@ def login():
             flash("Login Failure")
             return redirect(url_for('users.loginpage'))
 
+#Logout func
 @users_blueprint.route('/logout', methods=['POST'])
 @login_required
 def logout():
@@ -54,6 +57,7 @@ def logout():
     flash("Succesfully logout!")
     return redirect(url_for('users.loginpage'))
 
+#User page
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
@@ -64,16 +68,49 @@ def show(username):
         flash("Please login")
         return redirect(url_for('users.loginpage'))
 
+#Edit Username
+@users_blueprint.route('/user/<int:id>/edit', methods=["POST"])
+@login_required
+def edit_info(id):
+    
+    user = User.get_or_none(User.id == id)
+    if user:
+        if current_user.id == int(id):
+    
+            user.name=request.form.get("edit_name")
+            email= request.form.get("edit_email")
+            password= request.form.get("edit_password")
+
+            if len(password) > 0:
+                user.password = password
+            
+            if len(email) > 0 :
+                user.email = email
+
+            if user.save():
+                flash("Details updated")
+                return redirect(url_for('users.show', username = user.name))
+            else:
+                for error in user.errors:
+                    flash(error)
+                return redirect(url_for('home'))
+            
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
     return "USERS"
 
-
+#Edit page
 @users_blueprint.route('/<id>/edit', methods=['GET'])
+@login_required
 def edit(id):
-    pass
-
+    user = User.get_or_none(User.id == id)
+    if user:
+        if current_user.id == int(id):
+            return render_template('users/editinfo.html', user=user)
+    else:
+        flash("Please login")
+        return redirect(url_for('users.loginpage'))
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):

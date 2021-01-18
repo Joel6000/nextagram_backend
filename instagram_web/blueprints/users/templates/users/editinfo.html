@@ -1,0 +1,30 @@
+{% extends "_layout.html" %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <ul class=flashes>
+  {% for message in messages %}
+    <li>{{ message }}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+{% endwith %}
+{% if current_user.is_authenticated%}
+<h3>{{user.name}}</h3>
+<h3>{{current_user.name}}</h3>
+<h4>{{user.id}}</h4>
+<h4>{{current_user.id}}</h4>
+<form action="{{ url_for('users.edit_info', id=user.id) }}" method="POST">
+    <div class="form-group">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <label for="edit_name">Edit Name:</label>
+        <input type='text' name='edit_name' class="form-control" />
+        <label for="edit_email">Edit Email:</label>
+        <input type='text' name='edit_email' class="form-control" />
+        <label for="edit_password">Edit Password:</label>
+        <input type='text' name='edit_password' class="form-control" />
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endif %}
+{% endblock %}

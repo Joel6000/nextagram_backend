@@ -26,7 +26,7 @@ login_manager.login_message_catergory=""
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get_or_none(user_id == user_id)
+    return User.get_or_none(user_id == User.id)
 
 @app.before_request
 def before_request():

@@ -23,6 +23,8 @@
   <form action="{{ url_for('users.logout') }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <button type="submit" class="btn btn-primary">Logout</button>
-  </form> 
+  </form>
+  <a href="{{ url_for('users.show', username=current_user.name) }}">User Profile</a>
 {% endif %}
+<a href="{{ url_for('users.new') }}">Sign up</a>
 {% endblock %}
