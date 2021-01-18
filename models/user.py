@@ -3,13 +3,21 @@ import peewee as pw
 import re
 from werkzeug.security import generate_password_hash
 from flask_login import UserMixin
+from playhouse.hybrid import hybrid_property
 
 class User(UserMixin,BaseModel):
     name = pw.CharField(unique=True, null=False)
     email = pw.CharField(unique=False, null=False)
     password_hash = pw.TextField(null=False)
     password = None
+    image_path=pw.TextField(null=True)
     
+    @hybrid_property
+    def profile_image_url(self):
+        if self.image_path:
+            from app import app
+            return app.config.get('S3_LOCATION') + self.image_path
+
     def validate(self):
         duplicate_username = User.get_or_none(User.name == self.name)
         if duplicate_username and duplicate_username.id!=self.id:

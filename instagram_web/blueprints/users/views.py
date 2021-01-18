@@ -1,12 +1,14 @@
+import boto3, botocore
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.user import User
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import login_required, login_user, logout_user, current_user
+from instagram_web.util.helpers import upload_file_to_s3
 
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates')
-
 
 @users_blueprint.route('/new', methods=['GET'])
 def new():
@@ -115,3 +117,36 @@ def edit(id):
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
     pass
+
+@users_blueprint.route('/<id>/upload', methods=['POST'])
+@login_required
+def upload(id):
+    user= User.get_or_none(User.id ==id)
+    if user:
+        if current_user.id == int(id):
+            # Upload Image
+            if "user_file" not in request.files:
+                flash("No file selected")
+                return redirect(url_for('users.show', username=user.name))
+
+            file= request.files["user_file"]
+
+            file.filename = secure_filename(file.filename)
+
+            image_path = upload_file_to_s3(file, user.name)
+            
+            user.image_path= image_path
+            
+            if user.save():
+                flash("Upload sucess!")
+                return redirect(url_for('users.show', username=user.name))
+            else:
+                flash("Upload failed!")
+                return redirect(url_for('users.show', username=user.name))
+        else:
+            flash("Unable to edit other profiles")
+            return redirect(url_for('users.show', username=user.name))
+    else:
+        flash("No such user!")
+        return redirect(url_for('home'))
+                
