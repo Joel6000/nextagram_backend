@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.user import User
+from models import images
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import login_required, login_user, logout_user, current_user
-from instagram_web.util.helpers import upload_file_to_s3
+from instagram_web.util.helpers import upload_profile_to_s3
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -133,7 +134,7 @@ def upload(id):
 
             file.filename = secure_filename(file.filename)
 
-            image_path = upload_file_to_s3(file, user.name)
+            image_path = upload_profile_to_s3(file, user.name)
             
             user.image_path= image_path
 

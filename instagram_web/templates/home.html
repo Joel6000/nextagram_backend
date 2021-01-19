@@ -27,4 +27,8 @@
   <a href="{{ url_for('users.show', username=current_user.name) }}">User Profile</a>
 {% endif %}
 <a href="{{ url_for('users.new') }}">Sign up</a>
+<!-- Users list -->
+{% for user in users %}
+  <a href="{{ url_for('users.show', username=user.name)}}">{{user.name}}</a>
+{% endfor %}
 {% endblock %}

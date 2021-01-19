@@ -9,7 +9,7 @@ s3 = boto3.client(
    aws_secret_access_key=os.environ["AWS_SECRETKEY"]
 )
 
-def upload_file_to_s3(file, name, acl="public-read"):
+def upload_profile_to_s3(file, name, acl="public-read"):
 
     """
     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
@@ -32,3 +32,27 @@ def upload_file_to_s3(file, name, acl="public-read"):
         return e
 
     return "{}/{}".format(name, file.filename)
+
+def upload_images_to_s3(file, name, acl="public-read"):
+
+    """
+    Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
+    """
+
+    try:
+
+        s3.upload_fileobj(
+            file,
+            os.environ["BUCKET_NAME"],
+            "{}/images/{}".format(name, file.filename),
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": file.content_type
+            }
+        )
+
+    except Exception as e:
+        print("Something Happened: ", e)
+        return e
+
+    return "{}/images/{}".format(name, file.filename)
