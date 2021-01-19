@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.images import Images
-from models.user import User
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from instagram_web.util.helpers import upload_images_to_s3
