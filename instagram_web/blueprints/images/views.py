@@ -1,8 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+import requests
+import os
 from models.images import Images
+from models.donation import Donation
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
-from instagram_web.util.helpers import upload_images_to_s3
+from instagram_web.util.helpers import upload_images_to_s3, gateway
+from decimal import Decimal
 
 images_blueprint = Blueprint('images',
                             __name__,
@@ -13,9 +17,50 @@ images_blueprint = Blueprint('images',
 def new():
     return render_template('images/new.html')
 
+@images_blueprint.route('/<images_id>/payment', methods=['GET'])
+@login_required
+def payment(images_id):
+    token = gateway.client_token.generate()
+    return render_template('images/payment.html', token=token, images_id=images_id)
+
+@images_blueprint.route('/<images_id>/receive_payment', methods=['POST'])
+@login_required
+def pay(images_id):
+    nonce= request.form["nonce"]
+    amount= request.form["amount"]
+    print("11111111111111111111111111111"+ nonce)
+    result = gateway.transaction.sale({
+        "amount": amount,
+        "payment_method_nonce": nonce,
+        "options": {
+        "submit_for_settlement": True
+        }
+    })
+    if result.is_success:
+        images= Images.get_by_id(images_id)
+        donation = Donation (
+            images=images,
+            amount=Decimal(amount)
+        )
+        donation.save()
+        requests.post(
+		    f"https://api.mailgun.net/v3/{os.environ['MAILGUN_DOMAIN']}/messages",
+		    auth=("api", os.environ['MAILGUN_APIKEY']),
+		    data={
+                "from": f"Tester <MailGun Test@{os.environ['MAILGUN_DOMAIN']}",
+			    "to": ["joe_lim95@hotmail.com"],
+			    "subject": "Donation",
+			    "text": f"You donated ${amount}!"
+            }
+        )
+        flash("Donation successful!")
+    else:
+        flash("Donation failed!")
+    return redirect(url_for('users.show', username=current_user.name))
+
 @images_blueprint.route('/images', methods=['GET'])
 def images():
-    return 
+    pass
 
 @images_blueprint.route('/', methods=['POST'])
 def create():
@@ -30,8 +75,8 @@ def logout():
     pass
 
 @images_blueprint.route('/<id>', methods=["GET"])
-def show():
-    return 
+def show(id):
+    pass
 
 @images_blueprint.route('/user/<int:id>/edit', methods=["POST"])
 def edit_info(id):

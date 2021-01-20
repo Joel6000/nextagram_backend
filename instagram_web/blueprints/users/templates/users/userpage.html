@@ -18,8 +18,14 @@
 <a href="{{ url_for('users.edit', id=current_user.id) }}"> Edit Profile </a>
 <!-- Upload Images -->
 <a href="{{ url_for('images.new') }}"> Upload Images </a>
+
 {% for image in user.images %}
+<div>
   <img src="{{ image.images_url }}" width="300"/>
+  <p>Total donations received:</p>
+  <p>{{ image.donations| sum(attribute="amount") }}</p>
+  <a href="{{ url_for('images.payment', images_id=image.id) }}"> Donation </a>
+</div>
 {% endfor %}
 {% endif %}
 {% endblock %}

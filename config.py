@@ -11,6 +11,9 @@ class Config(object):
     S3_KEY = os.environ.get('AWS_KEY')
     S3_SECRETKEY = os.environ.get('AWS_SECRET_KEY')
     S3_LOCATION = 'http://{}.s3.amazonaws.com/'.format(S3_BUCKET)
+    BT_MERCHANTKEY=os.environ.get('BRAINTREE_MERCHANTKEY')
+    BT_PUBLICKEY=os.environ.get('BRAINTREE_PUBLICKEY')
+    BT_PRIVATEKEY=os.environ.get('BRAINTREE_PRIVATEKEY')
 
 
 class ProductionConfig(Config):
