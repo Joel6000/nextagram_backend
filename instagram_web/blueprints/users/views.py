@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import login_required, login_user, logout_user, current_user
 from instagram_web.util.helpers import upload_profile_to_s3
+from instagram_web.util.google_oauth import oauth
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -18,10 +19,26 @@ def new():
 def loginpage():
     return render_template('users/login.html')
 
+@users_blueprint.route("/google_login")
+def google_login():
+    redirect_uri = url_for('users.authorize', _external = True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@users_blueprint.route("/authorize/google")
+def authorize():
+    oauth.google.authorize_access_token()
+    email = oauth.google.get('https://www.googleapis.com/oauth2/v2/userinfo').json()['email']
+    user = User.get_or_none(User.email == email)
+    if user:
+        login_user(user)
+        return redirect(url_for('users.show', username=user.name))
+    else:
+        return redirect(url_for('users.new'))
+
 #Sign up func
 @users_blueprint.route('/', methods=['POST'])
 def create():
-    new_user = User ( 
+    new_user = User (
         name = request.form['username'] ,
         email = request.form['email'], 
         password = request.form['password'] 

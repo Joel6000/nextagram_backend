@@ -14,6 +14,8 @@ class Config(object):
     BT_MERCHANTKEY=os.environ.get('BRAINTREE_MERCHANTKEY')
     BT_PUBLICKEY=os.environ.get('BRAINTREE_PUBLICKEY')
     BT_PRIVATEKEY=os.environ.get('BRAINTREE_PRIVATEKEY')
+    GOOGLE_CLIENT_ID=os.environ.get("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET=os.environ.get("GOOGLE_CLIENT_SECRET")
 
 
 class ProductionConfig(Config):

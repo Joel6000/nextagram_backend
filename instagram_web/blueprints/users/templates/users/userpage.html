@@ -1,5 +1,6 @@
 {% extends "_layout.html" %}
 {% block content %}
+
 {% with messages = get_flashed_messages() %}
 {% if messages %}
   <ul class=flashes>
@@ -9,7 +10,8 @@
   </ul>
 {% endif %}
 {% endwith %}
-{% if current_user.is_authenticated%}
+
+{% if current_user.is_authenticated %}
 <h3>{{user.name}}</h3>
 <h3>{{current_user.name}}</h3>
 <img src="{{ user.profile_image_url }}"/>
@@ -19,12 +21,18 @@
 <!-- Upload Images -->
 <a href="{{ url_for('images.new') }}"> Upload Images </a>
 
+
 {% for image in user.images %}
 <div>
   <img src="{{ image.images_url }}" width="300"/>
   <p>Total donations received:</p>
   <p>{{ image.donations| sum(attribute="amount") }}</p>
-  <a href="{{ url_for('images.payment', images_id=image.id) }}"> Donation </a>
+  {% if current_user.name==user.name %}
+    <p>Cant donate to yourself.</p>
+  {% else %}
+    <a href="{{ url_for('images.payment', images_id=image.id) }}"> Donation </a>
+  {% endif %}
+  
 </div>
 {% endfor %}
 {% endif %}

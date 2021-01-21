@@ -25,8 +25,10 @@
     <button type="submit" class="btn btn-primary">Logout</button>
   </form>
   <a href="{{ url_for('users.show', username=current_user.name) }}">User Profile</a>
+{% else %}
+  <a href="{{ url_for('users.new') }}">Sign up</a>
+  <a href="{{ url_for('users.loginpage')}}">Login</a>
 {% endif %}
-<a href="{{ url_for('users.new') }}">Sign up</a>
 <!-- Users list -->
 {% for user in users %}
   <a href="{{ url_for('users.show', username=user.name)}}">{{user.name}}</a>
