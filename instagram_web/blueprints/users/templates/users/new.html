@@ -1,31 +1,34 @@
 {% extends "_layout.html" %}
+
 {% block content %}
-<h3>Sign up Form</h3>
+
 {% with messages = get_flashed_messages() %}
-{% if messages %}
-  <ul class=flashes>
-  {% for message in messages %}
-    <li>{{ message }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
-{% endwith %}
-<form action="{{ url_for('users.create') }}" method="POST">
-    <div class="form-group">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <div>
-            <label for="username">Username:</label>
-            <input type='text' name='username' class="form-control" />            
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type='text' name='password' class="form-control" />
-        </div>
-        <div>
-            <label for="email">Email address:</label>
-            <input type='text' name='email' class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+    {% if messages %}
+    <div class=flashes>
+        {% for message in messages %}
+            <div class="bg-info">{{ message }}</div>
+        {% endfor %}
     </div>
-</form>
+    {% endif %}
+{% endwith %}
+
+<h3>Sign up Form</h3>
+<hr/>
+<div class="container-fluid">
+    <div class="d-flex form-group">
+        <form class ="m-auto w-50" action="{{ url_for('users.create') }}" method="POST">
+            <div class="form-group">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <label for="username">Username:</label>
+                <input type='text' name='username' class="form-control mb-2" />            
+                <label for="password">Password:</label>
+                <input type='text' name='password' class="form-control mb-2" />
+                <label for="email">Email address:</label>
+                <input type='text' name='email' class="form-control mb-2" />
+                <button type="submit" class="btn btn-dark">Sign Up</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}

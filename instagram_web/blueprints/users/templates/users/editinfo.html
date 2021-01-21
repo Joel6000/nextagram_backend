@@ -10,29 +10,35 @@
 {% endif %}
 {% endwith %}
 {% if current_user.is_authenticated%}
-<h3>{{user.name}}</h3>
-<h3>{{current_user.name}}</h3>
-<h4>{{user.id}}</h4>
-<h4>{{current_user.id}}</h4>
-<form action="{{ url_for('users.edit_info', id=user.id) }}" method="POST">
-    <div class="form-group">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <label for="edit_name">Edit Name:</label>
-        <input type='text' name='edit_name' class="form-control" />
-        <label for="edit_email">Edit Email:</label>
-        <input type='text' name='edit_email' class="form-control" />
-        <label for="edit_password">Edit Password:</label>
-        <input type='text' name='edit_password' class="form-control" />
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-</form>
-<form action="{{ url_for('users.upload', id=current_user.id) }}" method="POST" enctype="multipart/form-data">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-  <label for="user_file">Upload Your File</label>
-  <br></br>
-  <input type="file" name="user_file">
-  <br></br>
-  <button type="submit">Upload</button>
-</form>
+<div class="container-fluid">
+  <h2>Update Personal Info</h2>
+  <div class="d-flex form-group align-items-center">
+    <form class="w-50 m-auto" action="{{ url_for('users.edit_info', id=user.id) }}" method="POST">
+        <div class="form-group">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <label for="edit_name">Edit Name:</label>
+          <input type='text' name='edit_name' class="form-control mb-2" />
+          <label for="edit_email">Edit Email:</label>
+          <input type='text' name='edit_email' class="form-control mb-2" />
+          <label for="edit_password">Edit Password:</label>
+          <input type='text' name='edit_password' class="form-control mb-2" />
+          <button type="submit" class="btn btn-dark mt-2">Submit</button>
+        </div>
+    </form>
+  </div>
+</div>
+<hr/>
+<div class="container-fluid">
+  <div class="d-flex form-group align-items-center">
+    <form class="w-50 m-auto" action="{{ url_for('users.upload', id=current_user.id) }}" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <label for="user_file">Upload Profile Image</label>
+      <br></br>
+      <input type="file" name="user_file">
+      <br></br>
+      <button type="submit" class="btn btn-dark">Upload</button>
+    </form>
+  </div>
+</div>
 {% endif %}
 {% endblock %}

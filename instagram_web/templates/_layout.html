@@ -15,7 +15,22 @@
     {% endassets %}
 
     {% block header %}
-    <a href="{{ url_for('home') }}">Homepage</a>
+    <nav class="navbar d-flex navbar-light bg-dark">
+      <a class="navbar-brand" href="{{ url_for('home') }}">Nextagram</a>
+      <a class="nav-link text-light" href="{{ url_for('home') }}">Home</a>
+      <div class="d-flex flex-wrap ml-auto">
+        {% if current_user.is_authenticated %}
+          <a class="nav-link text-light" href="{{ url_for('users.show', username=current_user.name) }}">{{current_user.name}}'s Profile Page</a>
+          <form action="{{ url_for('users.logout') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn bg-dark text-light">Logout</button>
+          </form>
+        {% else %}
+          <a class="nav-link text-light" href="{{ url_for('users.new') }}"> Sign up </a>
+          <a class="nav-link text-light" href="{{ url_for('users.loginpage')}}"> Login </a>
+        {% endif %}
+      </div>
+    </nav>
     {% endblock %}
 
     <title>
@@ -27,8 +42,9 @@
   <body>
     {% block content %}
     {% endblock %}
-    <footer>
-      Made with &hearts; at <a target="_blank" href="https://www.nextacademy.com/?utm_source=github&utm_medium=student-challenge&utm_campaign=flask-nextagram">NEXT Academy</a>
-    </footer>
+    
   </body>
+  <footer class="bg-dark text-light">
+    Made with &hearts; at <a class="text-light" target="_blank" href="https://www.nextacademy.com/?utm_source=github&utm_medium=student-challenge&utm_campaign=flask-nextagram">NEXT Academy</a>
+  </footer>
 </html>

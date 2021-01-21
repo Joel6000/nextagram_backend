@@ -4,33 +4,51 @@
   Homepage
 {% endblock %}
 
-{% block header %}
-{% endblock %}
+<!-- {% block header %}
+<nav class="navbar d-flex navbar-light bg-dark">
+  <a class="navbar-brand" href="{{ url_for('home') }}">Nextagram</a>
+  <a class="nav-link text-light" href="{{ url_for('home') }}">Home</a>
+  <div class="d-flex flex-wrap ml-auto">
+    {% if current_user.is_authenticated %}
+    <a class="nav-link text-light" href="{{ url_for('users.show', username=current_user.name) }}">{{current_user.name}}'s Profile Page</a>
+    <form action="{{ url_for('users.logout') }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button type="submit" class="btn bg-dark text-light">Logout</button>
+    </form>
+    {% else %}
+      <a class="nav-link text-light" href="{{ url_for('users.new') }}">Sign up</a>
+      <a class="nav-link text-light" href="{{ url_for('users.loginpage')}}">Login</a>
+    {% endif %}
+  </div>
+</nav>
+{% endblock %} -->
 
 {% block content %}
-  <h1>Homepage</h1>
+
+<h2>Homepage</h2>
+<hr/>
+
 {% with messages = get_flashed_messages() %}
-{% if messages %}
-  <ul class=flashes>
-  {% for message in messages %}
-    <li>{{ message }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
+  {% if messages %}
+    <div class=flashes>
+    {% for message in messages %}
+      <div class="bg-info">{{ message }}</div>
+    {% endfor %}
+    </div>
+  {% endif %}
 {% endwith %}
-{% if current_user.is_authenticated%}
+
+{% if current_user.is_authenticated %}
   <h3>Welcome, {{current_user.name}}</h3>
-  <form action="{{ url_for('users.logout') }}" method="POST">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-    <button type="submit" class="btn btn-primary">Logout</button>
-  </form>
-  <a href="{{ url_for('users.show', username=current_user.name) }}">User Profile</a>
-{% else %}
-  <a href="{{ url_for('users.new') }}">Sign up</a>
-  <a href="{{ url_for('users.loginpage')}}">Login</a>
 {% endif %}
 <!-- Users list -->
-{% for user in users %}
-  <a href="{{ url_for('users.show', username=user.name)}}">{{user.name}}</a>
-{% endfor %}
+<h2>Users Profile</h2>
+<div class="d-flex flex-row flex-wrap">
+  {% for user in users %}
+    <div class="card col-lg-4 col-md-6 col-sm-12">
+      <img class="card-img-top mt-auto mb-auto p-2" src="{{ user.profile_image_url}}" width="300"/>
+      <a class="card-text btn btn-dark align-self-center" href="{{ url_for('users.show', username=user.name)}}">{{user.name}}</a>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

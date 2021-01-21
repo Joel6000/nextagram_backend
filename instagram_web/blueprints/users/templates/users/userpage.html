@@ -2,38 +2,44 @@
 {% block content %}
 
 {% with messages = get_flashed_messages() %}
-{% if messages %}
-  <ul class=flashes>
-  {% for message in messages %}
-    <li>{{ message }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+   </ul>
+  {% endif %}
 {% endwith %}
 
 {% if current_user.is_authenticated %}
-<h3>{{user.name}}</h3>
-<h3>{{current_user.name}}</h3>
-<img src="{{ user.profile_image_url }}"/>
-<h4>{{user.id}}</h4>
-<h4>{{current_user.id}}</h4>
-<a href="{{ url_for('users.edit', id=current_user.id) }}"> Edit Profile </a>
-<!-- Upload Images -->
-<a href="{{ url_for('images.new') }}"> Upload Images </a>
 
+<div class="container">
+  <div class="card col-12 flex-column mt-2">
+    <img id="profile_image" class="col-12 align-self-center rounded-circle mt-2 w-50" src="{{ user.profile_image_url }}"/>
+    <h3>@{{ user.name }}</h3>
+    <p>Description:....</p>
+    {% if current_user.name == user.name %}
+      <div class="d-flex form-group justify-content-center m-0">
+        <a class="btn btn-dark m-1" href="{{ url_for('users.edit', id=current_user.id) }}"> Edit Profile </a>
+        <a class="btn btn-dark m-1" href="{{ url_for('images.new') }}"> Upload Image </a>
+      </div>
+    {% endif %}
+  </div>
 
-{% for image in user.images %}
-<div>
-  <img src="{{ image.images_url }}" width="300"/>
-  <p>Total donations received:</p>
-  <p>{{ image.donations| sum(attribute="amount") }}</p>
-  {% if current_user.name==user.name %}
-    <p>Cant donate to yourself.</p>
-  {% else %}
-    <a href="{{ url_for('images.payment', images_id=image.id) }}"> Donation </a>
-  {% endif %}
-  
+  <div class="d-flex flex-row flex-wrap">
+    {% for image in user.images %}
+      <div class="card col-lg-4 col-md-6 col-sm-12">
+        <img class="card-img-top mt-auto mb-auto p-2" src="{{ image.images_url }}" width="300"/>
+      
+        <p class="card-text align-self-center"> Total donations received: </p>
+        <p class="card-text align-self-center"> $ {{ image.donations| sum(attribute="amount") }}</p>
+      
+        {% if current_user.name !=user.name %}
+          <a class="btn btn-dark align-self-center" href="{{ url_for('images.payment', images_id=image.id) }}"> Donate </a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
 </div>
-{% endfor %}
 {% endif %}
 {% endblock %}

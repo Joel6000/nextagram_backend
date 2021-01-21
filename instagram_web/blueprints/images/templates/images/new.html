@@ -1,11 +1,18 @@
 {% extends "_layout.html" %}
 {% block content %}
-<form action="{{ url_for('images.upload', id=current_user.id) }}" method="POST" enctype="multipart/form-data">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-  <label for="images_file">Upload Images</label>
-  <br></br>
-  <input type="file" name="images_file">
-  <br></br>
-  <button type="submit">Upload</button>
-</form>
+
+<div class="container-fluid">
+  <h2>Upload Image</h2>
+  <hr/>
+  <div class="d-flex form-group align-items-center">
+    <form class="m-auto" action="{{ url_for('images.upload', id=current_user.id) }}" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <label for="images_file">Upload Image</label>
+      <br></br>
+      <input type="file" name="images_file">
+      <br></br>
+      <button type="submit" class="btn btn-dark">Upload</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

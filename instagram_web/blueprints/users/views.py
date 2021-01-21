@@ -67,6 +67,9 @@ def login():
         else:
             flash("Login Failure")
             return redirect(url_for('users.loginpage'))
+    else:
+        flash("No such user")
+        return redirect(url_for("users.loginpage"))
 
 #Logout func
 @users_blueprint.route('/logout', methods=['POST'])
