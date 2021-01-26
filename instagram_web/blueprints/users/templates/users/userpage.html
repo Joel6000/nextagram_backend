@@ -3,11 +3,11 @@
 
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <ul class=flashes>
+    <div class=flashes>
     {% for message in messages %}
-      <li>{{ message }}</li>
+      <div class="bg-info">{{ message }}</div>
     {% endfor %}
-   </ul>
+    </div>
   {% endif %}
 {% endwith %}
 
@@ -18,15 +18,52 @@
     <img id="profile_image" class="col-12 align-self-center rounded-circle mt-2 w-50" src="{{ user.profile_image_url }}"/>
     <h3>@{{ user.name }}</h3>
     <p>Description:....</p>
+
+    <div>Followers:</div>
+    {% for user in user.followers %}
+      <span>{{user.follower.name}}</span>
+    {% endfor %}
+
+    <div>Following:</div>
+    {% for user in user.followings %}
+      <span>{{user.following.name}}</span>
+    {% endfor %}
+
+    <br>
+
+    {% if user.private_profile %}
+      <p>Private Profile</p>
+    {% else %}
+      <p>Public Profile</p>
+    {% endif %}
+
     {% if current_user.name == user.name %}
       <div class="d-flex form-group justify-content-center m-0">
         <a class="btn btn-dark m-1" href="{{ url_for('users.edit', id=current_user.id) }}"> Edit Profile </a>
         <a class="btn btn-dark m-1" href="{{ url_for('images.new') }}"> Upload Image </a>
+        <a class="btn btn-dark m-1" href="{{ url_for('users.requests')}}">Requests</a>
       </div>
+    {% else %}
+      {% if follow %}
+        <div class="d-flex form-group justify-content-center m-0">
+          <form action="{{ url_for('users.unfollow', uid= user.id, id=follow.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type ="submit" class="btn btn-dark m-1"> Unfollow </button>
+          </form>
+        </div>
+      {% else %}
+        <div class="d-flex form-group justify-content-center m-0">
+          <form action="{{ url_for('users.follow', id=user.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type ="submit" class="btn btn-dark m-1"> Follow </button>
+          </form>
+        </div>
+      {% endif %}
     {% endif %}
   </div>
 
   <div class="d-flex flex-row flex-wrap">
+  {% if follow.approved or current_user.name == user.name %}
     {% for image in user.images %}
       <div class="card col-lg-4 col-md-6 col-sm-12">
         <img class="card-img-top mt-auto mb-auto p-2" src="{{ image.images_url }}" width="300"/>
@@ -39,6 +76,7 @@
         {% endif %}
       </div>
     {% endfor %}
+  {% endif %}
   </div>
 </div>
 {% endif %}

@@ -22,6 +22,8 @@
           <input type='text' name='edit_email' class="form-control mb-2" />
           <label for="edit_password">Edit Password:</label>
           <input type='text' name='edit_password' class="form-control mb-2" />
+          <label for="checkbox">Public / Private Profile:</label>
+          <input type='checkbox' name='checkbox' {{'checked' if user.private_profile}} class="form-control mb-2"/>
           <button type="submit" class="btn btn-dark mt-2">Submit</button>
         </div>
     </form>

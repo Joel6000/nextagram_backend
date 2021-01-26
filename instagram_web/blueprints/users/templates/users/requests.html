@@ -1,0 +1,40 @@
+{% extends "_layout.html" %}
+{% block content %}
+<h2>Requests</h2>
+
+<div>Followers:</div>
+{% for user in current_user.followers %}
+    <span>{{user.follower.name}}</span>
+    <form action="{{ url_for('users.unfollow', uid= current_user.id, id=user)}}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type ="submit" class="btn btn-dark m-1"> Remove </button>
+    </form>
+{% endfor %}
+<hr>
+<div>Follower requests (pending approvals):</div>
+{% for request in current_user.following_requests %}
+<p>{{ request.name }}</p>
+<form action="{{ url_for('users.approve', id=follow)}}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <button type ="submit" class="btn btn-dark m-1"> Approve </button>
+</form>
+{% endfor %}
+<hr>
+<div>Following:</div>
+{% for user in current_user.followings %}
+    <span>{{user.following.name}}</span>
+    <form action="{{ url_for('users.unfollow', uid= current_user.id, id=user)}}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type ="submit" class="btn btn-dark m-1"> Unfollow </button>
+    </form>
+{% endfor %}
+<hr>
+<div>Following requests (pending approval):</div>
+{% for following in current_user.follower_requests %}
+<p>{{ following.name }}</p>
+<form action="{{ url_for('users.unfollow', uid= current_user.id, id=follow.id)}}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <button type ="submit" class="btn btn-dark m-1"> Unfollow </button>
+</form>
+{% endfor %}
+{% endblock %}
